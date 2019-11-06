@@ -1,0 +1,241 @@
+---
+title: "실제 지반에 설치된 온실의 구조성능평가"
+author: "최만권, 류희룡, 조예영"
+date: "실험일: 2019년 5월 22일"
+output: word_document
+---
+
+### 1. 실험개요
+실제 지반에 설치된 단동온실의 정적특성을 분석하기 위해 접합형식이 다른 실물 크기의 실험체를 설치하여 실험을 수행하였다. 접합형식은 핀과 인발 형식을 적용하였다.
+본 실험은 단동온실의 변위와 하중을 추출하여 접합부에 따른 강성을 평가하고자 하였다. 단동온실의 정적특성을 바탕으로 구조해석 모델을 구축하고 단동온실 풍하중 설계의 기초자료로 활용한다.
+
+### 2. 실험체 계획
+
+온실의 접합부의 특성에 따른 구조성능을 검토하기 위한 실험체는 내재해형 규격 설계도 및 시방서에 등록된 10-단동-5형을 대상으로 하였다. 아래 그림과 같이 폭이 8.2, 동고가 3.5, 측고가 1.6, 길이이 12.0 m인 실물 크기의 온실을 2동 설치하였다(Table 1). Fig.1은 실험체의 치수 및 접합형식를 나타낸 것이다. 
+각 실험체온실은 설계도에 나와 있는것과 같이 지중도리를 설치하였다. 지중도리는 지면에서 약 20cm 깊에 설치 되었으며 지중도리와 서까래는 판형 죔쇠로 고정하였다. Fig.2는 지중도리 설치 상세도이다.
+
+#####
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tibble)
+
+df<-tibble(
+No. = c(1, 2),
+Experiment_ID = c("Exp_draw", "Exp_pin"),
+Joint_Type = c("핀형식", "인발형식")
+)
+
+knitr::kable(df, caption = "Table 1. 실험체 리스트", align = c("c","c"))
+```
+
+
+```{r echo=FALSE, fig.cap="Fig.1 온실 치수 및 접합부 형식"}
+knitr::include_graphics("Fig/Fig_1.png")
+```
+
+
+```{r echo=FALSE, fig.cap="Fig.2 지둥도리 상세도"}
+knitr::include_graphics("Fig/Fig_2.png")
+```
+
+#### 2.1 센서 설치
+
+하중이 가력되는 동안 실험체의 각 부재에 발생하는 변형률을 측정하기 위해 총 8개의 스트레인 게지이(FLA-5-11-1L, TML, JAPAN)를 부착하였다. 로드셀은 실험시 하중을 측정하기 위해서 가력기 선단부에 설치하였다. 
+
+#### 2.2 하중가력
+하중 가력은 국립원예특작과학원 시설원예연구소에서 개발한 이동식 온실 안전 진단차를 이용하여 가력하였다.
+가력 위치는 지면에서 1.6 m 높이의  11과 12번째 서까래 이다. 서까래와 가력기는 와이어로 연결하여 하중을 가력 하였다. 가력 속도는 1mm/sec로 변위가 150 mm이 도달할까지 실험을 진행하였다. Fig. 3은 센서 설치위치와 하중 가력 위치를 나타낸 모식도이다.
+
+
+```{r echo=FALSE, fig.cap="Fig.3 센서 설치 위치도"}
+knitr::include_graphics("Fig/Fig_3.png")
+```
+
+
+#### 2.3 데이터 수집
+
+로드셀에서 측정되는 하중과 스트레인 게이지로 측정되는 변형율은 Strainmeter을 이용하여 초당 10개씩 데이터를 기록하였다. 기록된 데이터는 csv파일로 변환하여 데이터 분석에 이용하였다. 
+
+### 3. 실험결과 
+
+#### 3.1 하중-변위 그래프
+
+Fig. 4는 각 실험체의 하중-변위 그래프를 나타낸 것이다. 이 그래프에서 모든 실험체는 변위 50 mm까지 거동은 거이 선형 거동을 나타 냈으며 실험 최대 변위에 도달 했을 때는 비선형 거동임을 알 수 있었다. 두 실험체의 구조성능을 비교하기 위하여 할선법을 이용하여 강성을 산정하였다. 임의의 할선을 그어 횡강성을 산정 하였으며로 정확한 수치적 결과 보다는 강선의 흐름을 파악하는데 초점을 두었다. 횡강성 평가는 시작점에서 변위 50, 100, 150mm 일 때의 하중을 구하여 횡강성을 산정하였다. 그 결과를 요약하면 Table. 2와 같다.
+Exp_draw 및 Exp_pin 실험체 모두 변위가 증가 할수록 횡강성은 감소하는 것으로 나타났다. 두 실험체의 강성을 비교해 보면 Exp_draw가 Exp_pin 실험체 보다 횡강성이 더 컸다. 
+
+```{r echo=FALSE, fig.width= 8, message=FALSE, warning=FALSE, paged.print=FALSE, fig.cap="Fig. 4. 하중-변위 그래프: Exp_draw(A), Exp_pin(B)"}
+library(tidyverse)
+library(cowplot)
+
+df_TMR<- read_csv("Data/field exp_TMR.csv")
+df_COM<- read_csv("Data/field exp_COM.csv")
+
+g1<- ggplot(df_COM)+geom_line(aes(Draw_Disp2, Draw_Load2, col="Draw_Load2"), size=1.2)+
+                    geom_line(aes(Draw_Disp3, Draw_Load3, col="Draw_Load3"), size=1.2)+
+geom_segment(aes(x=0, xend=50.3, y=0, yend=445), color="red", size=1, linetype="dotted")+
+geom_segment(aes(x=0, xend=50.3, y=0, yend=440), color="blue", size=1, linetype="dotted")+
+  geom_segment(aes(x=0, xend=150, y=0, yend=1047), color="red", size=1, linetype="dotted")+
+  geom_segment(aes(x=0, xend=150, y=0, yend=1032), color="blue", size=1, linetype="dotted")+
+  scale_colour_discrete(name="Load position", labels=c("Load 1", "Load 2"))+
+  xlab("Displacement (mm)")+ylab("Load (N)")+
+  ylim(0,1200)+
+  theme_classic()+
+  theme(
+    axis.title = element_text(size=16),
+    axis.text = element_text(size=14),
+    legend.text=element_text(size=12),
+    legend.title=element_text(size=14),
+    legend.key.height = unit(0.8, "cm"),
+    legend.key.width =  unit(0.8, "cm"),
+    panel.background = element_blank(),
+    legend.position = c(0.35, 0.85))
+
+
+g2<- ggplot(df_COM)+geom_line(aes(Pin_Disp2, Pin_Load2, col="Pin_Load2"), size=1.2)+
+               geom_line(aes(Pin_Disp3, Pin_Load3, col="Pin_Load3"), size=1.2)+
+  geom_segment(aes(x=0, xend=50.2, y=0, yend=418), color="red", size=1, linetype="dotted")+
+  geom_segment(aes(x=0, xend=50.1, y=0, yend=408), color="blue", size=1, linetype="dotted")+
+geom_segment(aes(x=0, xend=150, y=0, yend=1010.0), color="red", size=1, linetype="dotted")+
+geom_segment(aes(x=0, xend=150, y=0, yend=1077.0), color="blue", size=1, linetype="dotted")+
+  scale_colour_discrete(name="Load position", labels=c("Load 1", "Load 2"))+
+  xlab("Displacement (mm)")+ylab("Load (N)")+
+  ylim(0,1200)+
+  theme_classic()+
+  theme(
+    axis.title = element_text(size=16),
+    axis.text = element_text(size=14),
+    legend.text=element_text(size=12),
+    legend.title=element_text(size=14),
+    legend.key.height = unit(0.8, "cm"),
+    legend.key.width =  unit(0.8, "cm"),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+plot_grid(g1, g2, labels = c("A", "B"))
+```
+
+
+```{r echo=FALSE, fig.width= 8, message=FALSE, warning=FALSE, paged.print=FALSE}
+library(tibble)
+
+df1<-tibble(
+Displacement = c(50.3, 100.0, 150.0),
+Stiffness_draw = c(8.84, 7.57, 6.98),
+Stiffness_pin = c(8.33, 7.26, 6.73)
+)
+
+knitr::kable(df1, caption = "Table 2. 실험체별  횡강성", align = c("c","c", "c"),
+             col.names=c("목표변위 (mm)", "Exp_draw 횡강성 (N/mm)", "Exp_pin 횡강성 (N/mm)"))
+
+```
+
+
+
+
+#### 3.2 하중-응력 그래프
+측정된 최대하중 하에서 S1, S3 위치에 부착된 스트레인게이지에서 가장 큰 응력이 측정되었다. Exp_draw 실험체는 -103.0, -110.0 MPa(S1, S3, 압측응력), Exp_pin 실험체는 -81.8, -74.4 MPa(S1, S3, 압측응력)이었다. 최대하중 일때 Exp_draw 실험체 응력이 약 1.26, 1.47배 크게 측정되었다. 그러나 반대편에 위치한 S5, S7에서 측정한 응력은 반대의 결과를 나타냈다. 최대하중 일때 Exp_draw 실험체 응력이 약 0.46, 0.67배 작게 측정되었다.
+Figs.5-6는 측정 위치별 하중-응력 그래프를 나타낸것이다. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+
+df2<-tibble(
+  Position=c("Exp_draw", "Exp_pin", "Exp_draw/Exp_pin"),
+  S1=c("-103.0", "-81.8", "1.26"),
+  S3=c("-110.0", "-74.4", "1.48"),
+  S5=c("30.5", "66.6", "0.46"),
+  S7=c("44.1", "65.7", "0.67")
+)
+                
+
+knitr::kable(df2, caption = "Table 3. 실험체별 응력 비교", align = c("c","c", "c"),
+  col.names=c("실험체", "S1 응력 (N/mm^2)", "S3 응력 (N/mm^2)",  "S5 응력 (N/mm^2)", "S7 응력 (N/mm^2)"))
+
+```
+
+<br>
+
+```{r echo=FALSE, fig.width= 8, message=FALSE, warning=FALSE, paged.print=FALSE, fig.cap="Fig. 5. 하중-응력 그래프: Exp_draw"}
+library(tidyverse)
+library(cowplot)
+
+df_TMR<- read_csv("Data/field exp_TMR pull only.csv")
+df_TMR<- mutate(df_TMR, 
+                time=rep(1:50, len=length(df_TMR$Draw_LOAD2)),
+                time1=rep(1:50, len=length(df_TMR$Pin_LOAD2)))
+
+
+df_TMR_Draw<- df_TMR %>% mutate(
+        S1=(Draw_STN01)*0.2, S2=(Draw_STN02)*0.2,
+        S3=(Draw_STN03)*0.2, S4=(Draw_STN04)*0.2,
+        S5=(Draw_STN05)*0.2, S6=(Draw_STN06)*0.2,
+        S7=(Draw_STN07)*0.2, S8=(Draw_STN08)*0.2)%>%
+        filter(time==1) %>%
+        select(Draw_LOAD2, S1:S8)%>%
+        gather(type, value, -Draw_LOAD2) %>%
+        ggplot(aes(value, Draw_LOAD2, col=type))+
+        geom_path(size=1)+
+        geom_point(size=1.5)+
+        ylab("Load (N)")+xlab("Stress (MPa)")+ xlim(-120, 120)+
+        theme_bw()+
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=14),
+        strip.text = element_text(size=14),
+        legend.position = "top",
+        legend.text = element_text(size=14),
+        legend.title = element_blank())+
+  guides(color=guide_legend(nrow=1))
+
+df_TMR_Draw
+```
+
+
+```{r echo=FALSE, fig.width= 8, message=FALSE, warning=FALSE, paged.print=FALSE, fig.cap="Fig. 6. 응력-하중 그래프: Exp_pin"}
+
+df_TMR<- read_csv("Data/field exp_TMR pull only.csv")
+df_TMR<- mutate(df_TMR, 
+                time=rep(1:50, len=length(df_TMR$Draw_LOAD2)),
+                time1=rep(1:50, len=length(df_TMR$Pin_LOAD2)))
+
+df_TMR_Pin<- df_TMR %>% mutate(
+        S1=(Pin_STN01)*0.2, S2=(Pin_STN02)*0.2,
+        S3=(Pin_STN03)*0.2, S4=(Pin_STN04)*0.2,
+        S5=(Pin_STN05)*0.2, S6=(Pin_STN06)*0.2,
+        S7=(Pin_STN07)*0.2, S8=(Pin_STN08)*0.2)%>%
+        filter(time1==1)%>%
+        select(Pin_LOAD2, S1:S8) %>%
+        gather(type, value, -Pin_LOAD2) %>%
+        ggplot(aes(value, Pin_LOAD2, col=type))+
+        geom_path(size=1)+
+        geom_point(size=1.5)+
+        ylab("Load (N)")+xlab("Stress (MPa)")+ xlim(-120, 120)+
+        theme_bw()+
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=14),
+        strip.text = element_text(size=14),
+        legend.position = "top",
+        legend.text = element_text(size=14),
+        legend.title = element_blank())+
+  guides(color=guide_legend(nrow=1))
+
+df_TMR_Pin
+        
+
+
+```
+
+<br>
+
+### 4. 결론 
+
+실제 지반에 설치된 온실의 정적 구조성능평가 실험을 통해 확인한 사항은 다음과 같다. 
+
+- 접합 형식에 관계없이 지반에서 설치된 온실은 비선형 거동을 보였다. 
+- 모든 실험체 횡강성은 목표변위가 증가할수록 감소하는 경향을 보였다. 
+- 횡강성은 Exp_draw 실험체가 Exp_pin 실험체 보다 컸다. 
+- 변위 50, 100, 150mm 일 때 Exp_draw 실험체 횡강성은 Exp_pin 실험체 보다 약 5.8%, 4.1%, 3.6% 컸다.
+- 모든 실험체의 응력은 **S1**과 **S3** 위치에서 가장 크게 발생하였다. 
+- 최대하중 일때 Exp_draw 실험체 **S1, S3**에서 측정된 응력은 Exp_pin 보다 약 1.26배, 1.47배 컸다.
+- 최대하중 일때 Exp_draw 실험체 **S5, S7**에서 측정된 응력은 Exp_pin 보다 약 0.46배, 0.67배 작았다.
+
+
